@@ -1,0 +1,4 @@
+Flask
+PyYAML==3.10
+pep8
+venvgit2
