@@ -6,12 +6,16 @@
 """
 
 import os
-from pygit2 import clone_repository
+from pygit2 import clone_repository, discover_repository, Repository
 from api import config, ConfigException
 
 
 class NotEmptyRepoError(IOError):
     """Raised when an empty folder was expected, ie., for cloning."""
+
+
+class FileNotFound(IOError):
+    """Raised when a file doesn't exist at a given path"""
 
 
 def clone():
@@ -34,3 +38,25 @@ def clone():
 
     # grab some data!
     repo = clone_repository(repo_uri, repo_dir)
+
+
+def _get_data_repo():
+    repository_path = discover_repository(config['DATA_LOCAL'])
+    return Repository(repository_path)
+
+
+def _get_version(idhash=None):
+    repo = _get_data_repo()
+    if idhash is None:
+        idhash = repo.revparse_single("HEAD").head
+    try:
+        repo.get(idhash)
+    except Exception as e:
+        try:
+            repo.revparse_single(idhash)
+        except Exception as e2:
+            raise e
+
+
+def get_file_contents(path):
+    pass
