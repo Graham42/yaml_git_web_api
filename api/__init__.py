@@ -18,6 +18,13 @@ def json_response(obj, status=200):
     return resp
 
 
+@app.route('/schema', defaults={'path': ''}, methods=['GET'])
+@app.route('/schema/<path:path>', methods=['GET'])
+def get2(path):
+    # TODO serve schemas
+    return json_response({'win': 'scheme away'}, 200)
+
+
 @app.route('/', defaults={'path': ''}, methods=['GET'])
 @app.route('/<path:path>', methods=['GET'])
 def get(path):
