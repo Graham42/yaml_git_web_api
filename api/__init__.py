@@ -9,7 +9,7 @@ from api import repo
 import os
 
 app = Flask(__name__)
-app.config.from_object('api.local_config')
+app.config.from_object('api.config')
 
 
 def json_response(obj, status=200):
