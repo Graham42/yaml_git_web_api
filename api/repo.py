@@ -6,16 +6,12 @@
 """
 
 import os
-from pygit2 import clone_repository, discover_repository, Repository
+from pygit2 import clone_repository, discover_repository, Repository, Tree
 from api import config, ConfigException
 
 
 class NotEmptyRepoError(IOError):
     """Raised when an empty folder was expected, ie., for cloning."""
-
-
-class FileNotFound(IOError):
-    """Raised when a file doesn't exist at a given path"""
 
 
 def clone():
@@ -40,6 +36,22 @@ def clone():
     repo = clone_repository(repo_uri, repo_dir)
 
 
+def path_files(path):
+    repository_path = discover_repository(config['DATA_LOCAL'])
+    repo = Repository(repository_path)
+    commit = repo.revparse_single("HEAD")
+    tree = commit.tree
+    try:
+        tree_entry = tree[path]
+    except KeyError as e:
+        return None
+
+    if hasattr(repo[tree_entry.id], 'data'):
+        return (path,)
+    else:
+        return tuple([os.path.join(path, e.name) for e in repo[tree_entry.id]])
+
+
 def file_contents(path):
     repository_path = discover_repository(config['DATA_LOCAL'])
     repo = Repository(repository_path)
@@ -48,5 +60,7 @@ def file_contents(path):
     try:
         tree_entry = tree[path]
     except KeyError as e:
-        raise FileNotFound()
-    return repo[tree_entry.id].data
+        return None
+
+    if hasattr(repo[tree_entry.id], 'data'):
+        return repo[tree_entry.id].data

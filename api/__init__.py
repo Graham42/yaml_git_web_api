@@ -34,14 +34,17 @@ def get(path):
     # - get revision, default to HEAD
     # - maybe validate against schema??
 
-    file_path = os.path.join('data', path + '.yml')
+    file_path = os.path.join('data', path)
 
-    try:
-        raw = repo.file_contents(file_path)
-    except:
-        return json_response({"error": "not found"}, 404)
+    if repo.path_files(file_path + '.yml') is None:
+        f_list = repo.path_files(file_path)
+        if f_list is None:
+            return err(404)
+        data = f_list
+    else:
+        raw = repo.file_contents(file_path + '.yml')
+        data = yaml.load(raw)
 
-    data = yaml.load(raw)
     # get git meta data here
     metadata = {}
 
@@ -50,3 +53,18 @@ def get(path):
         'metadata': metadata
     }
     return json_response(ret_obj)
+
+
+ERROR_MSGS = {
+    '404': 'Not found'
+}
+
+
+def err(error_code):
+    data = {}
+    if str(error_code) in ERROR_MSGS:
+        data['error_message'] = ERROR_MSGS[str(error_code)]
+    else:
+        data['error_message'] = 'Unknown error'
+
+    return json_response(data, error_code)
