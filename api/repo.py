@@ -9,6 +9,10 @@ import os
 from pygit2 import clone_repository, discover_repository, Repository, Tree
 from api import config, ConfigException
 
+# Create branch: repo.create_branch("testing", repo[repo.lookup_branch("master").target])
+# Commit on branch: repo.create_commit(author, author, "msg", tree, (repo.lookup_branch("testing").target,))
+# Delete branch: repo.lookup_branch("testing").delete()
+
 
 class NotEmptyRepoError(IOError):
     """Raised when an empty folder was expected, ie., for cloning."""
