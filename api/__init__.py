@@ -44,7 +44,7 @@ def get(path):
     metadata = {}
 
     ret_obj = {
-        data: data,
-        metadata: metadata
+        'data': data,
+        'metadata': metadata
     }
     return json_response(data)
