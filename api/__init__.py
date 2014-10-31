@@ -3,8 +3,10 @@
 from flask import Flask
 from werkzeug.wrappers import Response
 import json
+import yaml
 from api.config import config, ConfigException
 from api import repo
+import os
 
 app = Flask(__name__)
 app.config.from_object('api.local_config')
@@ -30,14 +32,19 @@ def get(path):
     # maybe validate against schema??
     # convert to json and set as data part of the body
 
-    if path == 'somethingbad':
+    file_path = os.path.join('data', path + '.yml')
+
+    try:
+        raw = repo.file_contents(file_path)
+    except:
         return json_response({"error": "not found"}, 404)
 
-    result = {
-        'metadata': {},
-        'data': {
-            'path': path
-        }
-    }
+    data = yaml.load(raw)
+    # get git meta data here
+    metadata = {}
 
-    return json_response(result)
+    ret_obj = {
+        data: data,
+        metadata: metadata
+    }
+    return json_response(data)

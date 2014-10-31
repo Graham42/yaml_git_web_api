@@ -40,23 +40,13 @@ def clone():
     repo = clone_repository(repo_uri, repo_dir)
 
 
-def _get_data_repo():
+def file_contents(path):
     repository_path = discover_repository(config['DATA_LOCAL'])
-    return Repository(repository_path)
-
-
-def _get_version(idhash=None):
-    repo = _get_data_repo()
-    if idhash is None:
-        idhash = repo.revparse_single("HEAD").head
+    repo = Repository(repository_path)
+    commit = repo.revparse_single("HEAD")
+    tree = commit.tree
     try:
-        repo.get(idhash)
-    except Exception as e:
-        try:
-            repo.revparse_single(idhash)
-        except Exception as e2:
-            raise e
-
-
-def get_file_contents(path):
-    pass
+        tree_entry = tree[path]
+    except KeyError as e:
+        raise FileNotFound()
+    return repo[tree_entry.id].data
