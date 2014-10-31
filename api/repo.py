@@ -6,7 +6,7 @@
 """
 
 import os
-import subprocess
+from pygit2 import clone_repository
 from api import config, ConfigException
 
 
@@ -33,4 +33,4 @@ def clone():
         raise NotEmptyRepoError()
 
     # grab some data!
-    subprocess.check_call(['git', 'clone', repo_uri, repo_dir])
+    repo = clone_repository(repo_uri, repo_dir)

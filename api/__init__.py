@@ -3,6 +3,8 @@
 from flask import Flask
 from werkzeug.wrappers import Response
 import json
+from api.config import config, ConfigException
+from api import repo
 
 app = Flask(__name__)
 app.config.from_object('api.local_config')
