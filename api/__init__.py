@@ -22,15 +22,10 @@ def json_response(obj, status=200):
 @app.route('/<path:path>', methods=['GET'])
 def get(path):
     """Handle all GET requests to the api"""
-    # pseudo ish idea of what this function should do
-    # get request path
-    # get revision, default to HEAD
-    # set metadata part of the reponse body
-    # check if path + '.yml' exists at that revision
-    #   if not, return 404
-    # if exists, convert load yaml file
-    # maybe validate against schema??
-    # convert to json and set as data part of the body
+    # #FUTURE
+    # - git metadata
+    # - get revision, default to HEAD
+    # - maybe validate against schema??
 
     file_path = os.path.join('data', path + '.yml')
 
@@ -47,4 +42,4 @@ def get(path):
         'data': data,
         'metadata': metadata
     }
-    return json_response(data)
+    return json_response(ret_obj)
