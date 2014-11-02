@@ -11,6 +11,7 @@ This project is licensed under The MIT License (MIT) see the [LICENSE](LICENSE) 
 * [Required Structure of Data Repo](#required-structure-of-data-repo)
 * [Install](#install)
 * [Usage](#usage)
+* [Making API Calls](#making-api-calls)
 
 
 ## Required Structure of Data Repo
@@ -68,4 +69,19 @@ The `manage.py` script provides commands to do stuff. Run it with no arguments t
 $ ./manage.py init            # Get the data from the remote
 $ ./manage.py runserver       # Run a local development server
 $ ./manage.py test            # Run the app's test suite
+```
+
+## Making API Calls
+Something like `https://{host}/folder_X/data_file_XN`
+
+Should return
+```js
+{
+  "metadata": {
+    // git meta data here...
+  },
+  "data": {
+    // contents of the yaml file 'folder_X/data_file_XN.yaml' transformed to JSON
+  }
+}
 ```
