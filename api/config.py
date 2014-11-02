@@ -35,8 +35,9 @@ REQUIRED = object()  # used for identity checks `is REQUIRED`
 
 variables = (
     # Variables are a three-tuple of the form (NAME, 'default' or REQUIRED, 'help text')
-    ('DATA_REMOTE', 'https://github.com/Queens-Hacks/qcumber-data.git', 'the remote repository to read/write data'),
+    ('DATA_REMOTE', REQUIRED, 'the remote repository to read/write data'),
     ('DATA_LOCAL', 'data', 'the folder used to store the data repository locally'),
+    ('DATA_FILE_EXT', '.yml', 'the file extension for all data files'),
 )
 
 

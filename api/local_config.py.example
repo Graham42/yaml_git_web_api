@@ -1,0 +1,3 @@
+DATA_REMOTE = "https://github.com/Queens-Hacks/qcumber-data.git"
+DATA_LOCAL = "data"
+DATA_FILE_EXT = ".yml"
