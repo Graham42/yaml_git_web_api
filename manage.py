@@ -43,7 +43,7 @@ def init():
     try:
         api.repo.clone()
     except api.repo.NotEmptyRepoError:
-        print('Not cloning into {} because it is not empty.'.format(api.config['DATA_LOCAL']))
+        print('Not cloning into "{}" folder because it is not empty.'.format(api.config['DATA_LOCAL']))
     except api.ConfigException as e:
         print('There was a configuration error: {}'.format(e))
 

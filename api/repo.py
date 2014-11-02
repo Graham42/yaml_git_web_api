@@ -66,5 +66,4 @@ def file_contents(path):
     except KeyError as e:
         return None
 
-    if hasattr(repo[tree_entry.id], 'data'):
-        return repo[tree_entry.id].data
+    return getattr(repo[tree_entry.id], 'data', None)

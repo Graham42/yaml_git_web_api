@@ -20,14 +20,14 @@ def json_response(obj, status=200):
 
 @app.route('/schema', defaults={'path': ''}, methods=['GET'])
 @app.route('/schema/<path:path>', methods=['GET'])
-def get2(path):
+def getSchemas(path):
     # TODO serve schemas
     return json_response({'win': 'scheme away'}, 200)
 
 
 @app.route('/', defaults={'path': ''}, methods=['GET'])
 @app.route('/<path:path>', methods=['GET'])
-def get(path):
+def getData(path):
     """Handle all GET requests to the api"""
     # #FUTURE
     # - git metadata
