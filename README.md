@@ -1,6 +1,6 @@
 # YAML Git Web Api
 
-[![Build Status](https://travis-ci.org/Graham42/yaml_git_web_api.png)](https://travis-ci.org/Graham42/yaml_git_web_api.png)
+[![Build Status](https://travis-ci.org/Graham42/yaml_git_web_api.png)](https://travis-ci.org/Graham42/yaml_git_web_api)
 
 Serves up a git repo of YAML files as a RESTful web api.
 
