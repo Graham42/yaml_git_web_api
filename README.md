@@ -15,19 +15,17 @@ This project is licensed under The MIT License (MIT) see the [LICENSE](LICENSE) 
 
 
 ## Required Structure of Data Repo
-Probably validate with somehting like https://github.com/Queens-Hacks/data-schema-validate
-```
+In the future, will probably validate with something like https://github.com/Queens-Hacks/data-schema-validate
+```yaml
 root:
   data:
     - folder_X:
       - data_file_XN.yaml
-
     - data_file_Z.yaml
 
   schema:
     - folder_X:
       - schema_X.yaml
-
     - schema.yaml
 ```
 
