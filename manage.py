@@ -41,7 +41,9 @@ def init():
     """Set the api up: clone the data repo, etc."""
     import api
     try:
+        print("Cloning the remote...")
         api.repo.clone()
+        print("Done!")
     except api.repo.NotEmptyRepoError:
         print('Not cloning into "{}" folder because it is not empty.'.format(api.config['DATA_LOCAL']))
     except api.ConfigException as e:
