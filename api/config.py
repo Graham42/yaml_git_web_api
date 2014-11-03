@@ -29,7 +29,6 @@
     Refer to `variables` below as a reference for which variables you should set.
 """
 
-
 REQUIRED = object()  # used for identity checks `is REQUIRED`
 
 
@@ -61,9 +60,10 @@ class _GetitemProxy(object):
 def get_source():
     """Try to load config by importing local_config; fall back on environment variables."""
     try:
-        import local_config as config_module
+        import api.local_config as config_module
         source = _GetitemProxy(config_module)
     except ImportError:
+        print("WARNING no module local_config found, setting environment vars as config source")
         import os
         source = os.environ
     return source
@@ -76,7 +76,7 @@ def get_config(variables, source):
             config[name] = source[name]
         except KeyError:
             if req is REQUIRED:
-                raise ConfigException('Couldn\'t get "{}", {}. :('.format(name, help))
+                raise ConfigException('Could note get "{}", {}. :('.format(name, help))
             else:
                 config[name] = req
     return config
