@@ -40,10 +40,13 @@ def clone():
     repo = clone_repository(repo_uri, repo_dir)
 
 
-def path_files(path):
+def path_files(path, revision=None):
     repository_path = discover_repository(config['DATA_LOCAL'])
     repo = Repository(repository_path)
-    commit = repo.revparse_single("HEAD")
+    if revision is None:
+        commit = repo.revparse_single('refs/heads/'+config['MAIN_BRANCH'])
+    else:
+        commit = repo[revision]
     tree = commit.tree
     try:
         tree_entry = tree[path]
@@ -51,15 +54,20 @@ def path_files(path):
         return None
 
     if hasattr(repo[tree_entry.id], 'data'):
+        # is a file
         return (path,)
     else:
+        # is a directory
         return tuple([os.path.join(path, e.name) for e in repo[tree_entry.id]])
 
 
-def file_contents(path):
+def file_contents(path, revision=None):
     repository_path = discover_repository(config['DATA_LOCAL'])
     repo = Repository(repository_path)
-    commit = repo.revparse_single("HEAD")
+    if revision is None:
+        commit = repo.revparse_single('refs/heads/'+config['MAIN_BRANCH'])
+    else:
+        commit = repo[revision]
     tree = commit.tree
     try:
         tree_entry = tree[path]
@@ -67,3 +75,17 @@ def file_contents(path):
         return None
 
     return getattr(repo[tree_entry.id], 'data', None)
+
+
+def get_commit(revision):
+    repository_path = discover_repository(config['DATA_LOCAL'])
+    repo = Repository(repository_path)
+    return repo.revparse_single(revision)
+
+
+def get_named_commit(ref_name):
+    return get_commit('refs/heads/' + ref_name)
+
+
+def get_latest_commit():
+    return get_named_commit(config['MAIN_BRANCH'])

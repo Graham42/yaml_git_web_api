@@ -3,7 +3,8 @@ import json
 import os
 
 ERROR_MSGS = {
-    '404': 'Not found'
+    '404': 'Not found',
+    '406': 'Bad Accept header'
 }
 
 

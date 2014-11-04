@@ -37,6 +37,7 @@ variables = (
     ('DATA_REMOTE', REQUIRED, 'the remote repository to read/write data'),
     ('DATA_LOCAL', 'data', 'the folder used to store the data repository locally'),
     ('DATA_FILE_EXT', '.yml', 'the file extension for all data files'),
+    ('MAIN_BRANCH', 'master', 'the main branch of the data repo to work on')
 )
 
 
