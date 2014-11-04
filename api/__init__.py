@@ -13,7 +13,7 @@ app.config.from_object('api.config')
 
 
 def json_response(obj, status=200):
-    body = json.dumps(obj)
+    body = json.dumps(obj, sort_keys=True)
     resp = Response(body, status=status, mimetype='application/json')
     return resp
 
