@@ -1,10 +1,10 @@
 # try and keep Flask imports to a minimum, going to refactor later to use
 # just werkzeug, for now, prototype speed is king
-from flask import Flask
+from flask import Flask, request
 import yaml
-from api.config import config, ConfigException
-from api import repo
 import os
+from api.config import config, ConfigException
+import api.repo
 import api.utils
 
 app = Flask(__name__)
@@ -33,10 +33,11 @@ def getData(path):
         f_list = repo.path_files(file_path)
         if f_list is None:
             return utils.err(404)
-        data = f_list
+        data = utils.file_list_to_links(f_list, request.host_url, 'data/')
     else:
         raw = repo.file_contents(file_path + '.yml')
         data = yaml.load(raw)
+        data = utils.refs_to_links(data, request.host_url)
 
     # get git meta data here
     metadata = {}
