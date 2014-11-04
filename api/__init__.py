@@ -13,14 +13,14 @@ app.config.from_object('api.config')
 
 @app.route('/schema', defaults={'path': ''}, methods=['GET'])
 @app.route('/schema/<path:path>', methods=['GET'])
-def getSchemas(path):
+def get_schemas(path):
     # TODO serve schemas
     return utils.json_response({'win': 'scheme away'}, 200)
 
 
 @app.route('/', defaults={'path': ''}, methods=['GET'])
 @app.route('/<path:path>', methods=['GET'])
-def getData(path):
+def get_data(path):
     """Handle all GET requests to the api"""
     # #FUTURE
     # - git metadata
