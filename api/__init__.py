@@ -29,13 +29,13 @@ def get_data(path):
 
     file_path = os.path.join('data', path)
 
-    if repo.path_files(file_path + '.yml') is None:
+    if repo.path_files(file_path + config['DATA_FILE_EXT']) is None:
         f_list = repo.path_files(file_path)
         if f_list is None:
             return utils.err(404)
         data = utils.file_list_to_links(f_list, request.host_url, 'data/')
     else:
-        raw = repo.file_contents(file_path + '.yml')
+        raw = repo.file_contents(file_path + config['DATA_FILE_EXT'])
         data = yaml.load(raw)
         data = utils.refs_to_links(data, request.host_url)
 
