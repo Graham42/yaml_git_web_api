@@ -34,14 +34,19 @@ def get_data(path):
     # check if the request specified a version via header
     accept_pattern = re.compile('application/(.+)\+json')
     match = accept_pattern.match(request.headers['Accept'])
-    if match is not None:
-        cid = match.group(1)
-        try:
-            version = repo.get_commit(cid)
-        except KeyError as e:
+    if match is None:
+        match = request.accept_mimetypes.best_match(['application/json'])
+        if match is None:
             return utils.err(406)
     else:
-        version = latest_version
+        if match.group(2) is None:
+            version = latest_version
+        else:
+            cid = match.group(2)
+            try:
+                version = repo.get_commit(cid)
+            except (KeyError, ValueError) as e:
+                return utils.err(406)
 
     if repo.path_files(file_path + config['DATA_FILE_EXT'], version.id) is None:
         # .yml file doesn't exist, check if path matches a directory
