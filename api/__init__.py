@@ -30,7 +30,8 @@ def get_data(path):
 
     file_path = os.path.join('data', path)
     latest_version = repo.get_latest_commit()
-
+    # default request version to the latest
+    version = latest_version
     # check if the request specified a version via header
     accept_pattern = re.compile('application/(.+)\+json')
     match = accept_pattern.match(request.headers['Accept'])
@@ -39,9 +40,7 @@ def get_data(path):
         if match is None:
             return utils.err(406)
     else:
-        if match.group(2) is None:
-            version = latest_version
-        else:
+        if match.group(2) is not None:
             cid = match.group(2)
             try:
                 version = repo.get_commit(cid)
