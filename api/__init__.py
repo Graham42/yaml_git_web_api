@@ -76,3 +76,21 @@ def get_data(path):
         'metadata': metadata
     }
     return utils.json_response(ret_obj)
+
+
+@app.errorhandler(Exception)
+def unknown_err(error):
+    data = {
+        'status': 500,
+        'error_message': 'Unknown Internal Server Error'
+    }
+    return utils.json_response(data, 500)
+
+
+@app.errorhandler(405)
+def http_errs(error):
+    data = {
+        'status': error.code,
+        'error_message': error.name
+    }
+    return utils.json_response(data, error.code)
