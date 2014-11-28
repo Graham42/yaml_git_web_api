@@ -1,6 +1,6 @@
 # try and keep Flask imports to a minimum, going to refactor later to use
 # just werkzeug, for now, prototype speed is king
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import yaml
 import os
 import re
@@ -8,17 +8,30 @@ from datetime import datetime
 from api.config import config, ConfigException
 import api.repo
 import api.utils
+from werkzeug import exceptions as wz_err
+from werkzeug.exceptions import default_exceptions
 
 
 app = Flask(__name__)
 app.config.from_object('api.config')
 
 
+def make_json_error(err):
+    response = jsonify(message=str(err))
+    response.status_code = err.code if isinstance(err, wz_err.HTTPException) else 500
+    if config['DEBUG']:
+        response.developer_message = str(err)
+    return response
+
+for code in default_exceptions.keys():
+    app.error_handler_spec[None][code] = make_json_error
+
+
 @app.route('/schema', defaults={'path': ''}, methods=['GET'])
 @app.route('/schema/<path:path>', methods=['GET'])
 def get_schemas(path):
     # TODO serve schemas
-    return utils.json_response({'TODO': 'scheme away'}, 501)
+    return utils.json_response({'TODO': 'scheme away'}, wz_err.NotImplemented)
 
 
 @app.route('/', defaults={'path': ''}, methods=['GET', 'POST', 'PUT'])
@@ -31,7 +44,7 @@ def _data(path):
     elif request.method == 'POST':
         return data_post(path)
     else:
-        raise 501
+        raise wz_err.NotImplemented
 
 
 def data_get(path):
@@ -51,20 +64,20 @@ def data_get(path):
     if match is None:
         match = request.accept_mimetypes.best_match(['application/json'])
         if match is None:
-            return utils.err(406)
+            raise wz_err.NotAcceptable
     else:
         if match.group(2) is not None:
             cid = match.group(2)
             try:
                 version = repo.get_commit(cid)
             except (KeyError, ValueError) as e:
-                return utils.err(406)
+                raise wz_err.NotAcceptable
 
     if repo.path_files(file_path + config['DATA_FILE_EXT'], version.id) is None:
         # .yml file doesn't exist, check if path matches a directory
         f_list = repo.path_files(file_path, version.id)
         if f_list is None:
-            return utils.err(404)
+            raise wz_err.NotFound
         data = utils.file_list_to_links(f_list, request.host_url, 'data/')
 
         metadata['data_type'] = 'directory listing'
@@ -139,23 +152,3 @@ def data_post(path):
         # return error - already exists
         pass
     return utils.json_response({'posted': 'more stuff'})
-
-
-@app.errorhandler(Exception)
-def unknown_err(error):
-    data = {
-        'status': 500,
-        'error_message': 'Unknown Internal Server Error'
-    }
-    if config['DEBUG']:
-        data['developer_message'] = str(error)
-    return utils.json_response(data, 500)
-
-
-@app.errorhandler(405)
-def http_errs(error):
-    data = {
-        'status': error.code,
-        'error_message': error.name
-    }
-    return utils.json_response(data, error.code)
