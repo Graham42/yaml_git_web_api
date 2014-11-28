@@ -84,6 +84,8 @@ def unknown_err(error):
         'status': 500,
         'error_message': 'Unknown Internal Server Error'
     }
+    if config['DEBUG']:
+        data['developer_message'] = str(error)
     return utils.json_response(data, 500)
 
 
