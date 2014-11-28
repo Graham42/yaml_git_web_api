@@ -2,3 +2,4 @@ DATA_REMOTE = "https://github.com/Graham42/qcumber-data.git"
 DATA_LOCAL = "data"
 DATA_FILE_EXT = ".yml"
 MAIN_BRANCH = "yaml-with-schema"
+DEBUG = True

@@ -58,8 +58,8 @@ def runserver(host="127.0.0.1", port="5000"):
     except ValueError:
         print('The port number must be in integer (got "{}")'.format(port))
         raise SystemExit(1)
-    from api import app
-    app.run(host=host, port=port_num, debug=True, use_reloader=True)
+    from api import app, config
+    app.run(host=host, port=port_num, debug=config['DEBUG'], use_reloader=True)
 
 
 @command
