@@ -21,8 +21,15 @@ def get_schemas(path):
     return utils.json_response({'TODO': 'scheme away'}, 501)
 
 
-@app.route('/', defaults={'path': ''}, methods=['GET'])
-@app.route('/<path:path>', methods=['GET'])
+@app.route('/', defaults={'path': ''}, methods=['GET', 'POST'])
+@app.route('/<path:path>', methods=['GET', 'POST'])
+def _data(path):
+    if request.method == 'GET':
+        return get_data(path)
+    elif request.method == 'POST':
+        return write_data(path)
+
+
 def get_data(path):
     """Handle all GET requests to the api"""
 
@@ -76,6 +83,10 @@ def get_data(path):
         'metadata': metadata
     }
     return utils.json_response(ret_obj)
+
+
+def write_data(path):
+    return utils.json_response({'posted': 'stuff'})
 
 
 @app.errorhandler(Exception)
