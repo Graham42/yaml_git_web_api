@@ -18,7 +18,7 @@ app.config.from_object('api.config')
 @app.route('/schema/<path:path>', methods=['GET'])
 def get_schemas(path):
     # TODO serve schemas
-    return utils.json_response({'win': 'scheme away'}, 200)
+    return utils.json_response({'TODO': 'scheme away'}, 501)
 
 
 @app.route('/', defaults={'path': ''}, methods=['GET'])
