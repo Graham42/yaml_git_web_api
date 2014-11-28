@@ -21,17 +21,23 @@ def get_schemas(path):
     return utils.json_response({'TODO': 'scheme away'}, 501)
 
 
-@app.route('/', defaults={'path': ''}, methods=['GET', 'POST'])
-@app.route('/<path:path>', methods=['GET', 'POST'])
+@app.route('/', defaults={'path': ''}, methods=['GET', 'POST', 'PUT'])
+@app.route('/<path:path>', methods=['GET', 'POST', 'PUT'])
 def _data(path):
     if request.method == 'GET':
-        return get_data(path)
+        return data_get(path)
+    elif request.method == 'PUT':
+        return data_put(path)
     elif request.method == 'POST':
-        return write_data(path)
+        return data_post(path)
+    else:
+        raise 501
 
 
-def get_data(path):
-    """Handle all GET requests to the api"""
+def data_get(path):
+    """
+    HTTP method GET for data
+    """
 
     metadata = {}
 
@@ -85,8 +91,54 @@ def get_data(path):
     return utils.json_response(ret_obj)
 
 
-def write_data(path):
-    return utils.json_response({'posted': 'stuff'})
+def data_put(path):
+    """
+    HTTP method PUT for data
+
+    Update the existing resource or create a new one if it does not exist at the
+    specified path.
+    In either case the received object will be validated against the schema for
+    this resource type. If no schema exists, will return an error.
+
+    Example to create or update student with id 1234:
+    PUT /student/1234
+    """
+    # check if path exists
+    file_path = os.path.join('data', path) + config['DATA_FILE_EXT']
+    latest_version = repo.get_latest_commit()
+    if repo.path_files(file_path, latest_version.id) is None:
+        # check schema exists, and validate against schema
+        # if ok, create resource
+        pass
+    else:
+        # validate against schema, and update file
+        # if ok, replace resource
+        pass
+    return utils.json_response({'put': 'stuff'})
+
+
+def data_post(path):
+    """
+    HTTP method POST for data
+
+    Create a new resource if it does not exist.The received object will be
+    validated against the schema for this resource type. If no schema exists,
+    will return an error.
+
+    Example to create a new student (would generate id):
+    POST /student/
+    """
+    # check if path exists
+    file_path = os.path.join('data', path) + config['DATA_FILE_EXT']
+    latest_version = repo.get_latest_commit()
+    if repo.path_files(file_path, latest_version.id) is None:
+        # check schema exists, and validate against schema
+        # if ok, create new resource and return location
+        pass
+    else:
+        # return error - already exists
+        pass
+    return utils.json_response({'posted': 'more stuff'})
 
 
 @app.errorhandler(Exception)
