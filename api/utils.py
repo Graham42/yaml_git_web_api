@@ -2,26 +2,11 @@ from werkzeug.wrappers import Response
 import json
 import os
 
-ERROR_MSGS = {
-    '404': 'Not found',
-    '406': 'Bad Accept header'
-}
-
 
 def json_response(obj, status=200):
     body = json.dumps(obj, sort_keys=True)
     resp = Response(body, status=status, mimetype='application/json')
     return resp
-
-
-def err(error_code):
-    data = {}
-    if str(error_code) in ERROR_MSGS:
-        data['error_message'] = ERROR_MSGS[str(error_code)]
-    else:
-        data['error_message'] = 'Unknown error'
-
-    return json_response(data, error_code)
 
 
 def file_list_to_links(f_list, host_url, prefix_to_rm=''):
