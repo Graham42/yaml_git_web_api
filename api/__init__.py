@@ -1,5 +1,3 @@
-# try and keep Flask imports to a minimum, going to refactor later to use
-# just werkzeug, for now, prototype speed is king
 from flask import Flask, request, jsonify
 import yaml
 import os
