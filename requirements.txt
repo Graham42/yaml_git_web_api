@@ -2,3 +2,4 @@ Flask
 PyYAML==3.10
 pep8
 venvgit2
+git+https://github.com/mk-fg/pretty-yaml.git#egg=pyaml

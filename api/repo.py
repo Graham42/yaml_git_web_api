@@ -6,7 +6,9 @@
 """
 
 import os
-from pygit2 import clone_repository, discover_repository, Repository, Tree
+import pyaml as pretty_yaml
+from pygit2 import clone_repository, discover_repository, Repository, Tree,
+Signature
 from api import config, ConfigException
 
 # Create branch: repo.create_branch("testing", repo[repo.lookup_branch("master").target])
@@ -86,3 +88,17 @@ def get_named_commit(ref_name):
 
 def get_latest_commit():
     return local_repo.revparse_single(config['MAIN_BRANCH'])
+
+
+def write_file(path, data, token):
+    try:
+        branch = local_repo.create_branch(token, get_latest_commit())
+    except Exception as e:
+        # TODO more specific exception
+        branch = repo.lookup_branch('master')
+
+    author = committer = Signature('Joe S', 'joes@example.com')
+    print(path)
+    print(pretty_yaml.dump(data, string_val_style='>'))
+
+    return token

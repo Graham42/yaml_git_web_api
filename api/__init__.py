@@ -8,7 +8,9 @@ import api.repo
 import api.utils
 from werkzeug import exceptions as wz_err
 from werkzeug.exceptions import default_exceptions
+from uuid import uuid4
 
+WRITE_TOKEN_HEADER = 'X-Bulk-Write-Token'
 
 app = Flask(__name__)
 app.config.from_object('api.config')
@@ -104,35 +106,37 @@ def data_get(path):
 
 def data_put(path):
     """
-    HTTP method PUT for data
+    Handle HTTP PUT for data
 
-    Update the existing resource or create a new one if it does not exist at the
-    specified path.
-    In either case the received object will be validated against the schema for
-    this resource type. If no schema exists, will return an error.
+    Overwrite the existing resource or create a new one. In either case the
+    received object will be validated against the schema for this resource type.
+    If no schema exists, will return an error.
+
+    Returns the path of the file that was written and a bulk write token which
+    can be used to add more writes to the branch corresponding to this token.
 
     Example to create or update student with id 1234:
     PUT /student/1234
     """
-    # check if path exists
-    file_path = os.path.join('data', path) + config['DATA_FILE_EXT']
-    latest_version = repo.get_latest_commit()
-    if repo.path_files(file_path, latest_version.id) is None:
-        # check schema exists, and validate against schema
-        # if ok, create resource
-        pass
+    # check schema exists, and validate against schema
+    # if ok, create resource
+    data = yaml.load(request.get_json())
+    # check if the request is adding to an existing branch
+    if WRITE_TOKEN_HEADER in request.headers:
+        token = request.headers[WRITE_TOKEN_HEADER]
     else:
-        # validate against schema, and update file
-        # if ok, replace resource
-        pass
-    return utils.json_response({'put': 'stuff'})
+        token = str(uuid4())
+
+    file_path = os.path.join('data', path) + config['DATA_FILE_EXT']
+    repo.write_file(file_path, data, token)
+    return utils.json_response({'href': path, WRITE_TOKEN_HEADER: token})
 
 
 def data_post(path):
     """
-    HTTP method POST for data
+    Handle HTTP POST for data
 
-    Create a new resource if it does not exist.The received object will be
+    Create a new resource if it does not exist. The received object will be
     validated against the schema for this resource type. If no schema exists,
     will return an error.
 
